@@ -6,7 +6,7 @@ if _api_key:
     os.environ["GOOGLE_API_KEY"] = _api_key
 
 from agent import run_agent
-from ingestion import ingest_single_file
+from ingestion import ingest_single_file, ingest_all
 from utils.vendor_lookup import lookup_vendor_risk, VendorRiskReport
 
 # ── Contract registry ──────────────────────────────────────────────────────────
@@ -90,6 +90,19 @@ st.markdown("""
     .sentiment-badge.concerning { background: #d32f2f; }
 </style>
 """, unsafe_allow_html=True)
+
+# ── Auto-ingest on first startup ───────────────────────────────────────────────
+
+@st.cache_resource(show_spinner="Indexing contracts…")
+def _ensure_contracts_ingested():
+    from pathlib import Path
+    import chromadb
+    _client = chromadb.PersistentClient(path=str(Path("data/embeddings")))
+    _col = _client.get_or_create_collection(name="contracts")
+    if _col.count() == 0:
+        ingest_all()
+
+_ensure_contracts_ingested()
 
 # ── Session state init ─────────────────────────────────────────────────────────
 
