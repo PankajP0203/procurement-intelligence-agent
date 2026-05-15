@@ -21,7 +21,7 @@ collection = chroma_client.get_or_create_collection(name="contracts")
 
 
 @retry(
-    retry=retry_if_exception(lambda e: isinstance(e, genai_errors.ClientError)),
+    retry=retry_if_exception(lambda e: isinstance(e, (genai_errors.ClientError, genai_errors.ServerError))),
     stop=stop_after_attempt(3),
     wait=wait_exponential(multiplier=1, min=10, max=60),
     reraise=True,
