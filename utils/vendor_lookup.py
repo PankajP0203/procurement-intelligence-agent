@@ -5,10 +5,11 @@ from google import genai
 from google.genai import types, errors as genai_errors
 from pydantic import BaseModel
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
+import streamlit as st
 
 load_dotenv()
 
-gemini = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+gemini = genai.Client(api_key=os.getenv("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY"))
 
 
 class VendorRiskReport(BaseModel):

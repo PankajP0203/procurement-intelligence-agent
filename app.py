@@ -1,4 +1,10 @@
+import os
 import streamlit as st
+
+_api_key = os.getenv("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY")
+if _api_key:
+    os.environ["GOOGLE_API_KEY"] = _api_key
+
 from agent import run_agent
 from ingestion import ingest_single_file
 from utils.vendor_lookup import lookup_vendor_risk, VendorRiskReport

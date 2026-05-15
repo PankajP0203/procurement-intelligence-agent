@@ -9,12 +9,13 @@ from pydantic import BaseModel
 import chromadb
 from langgraph.graph import StateGraph, END
 import operator
+import streamlit as st
 
 load_dotenv()
 
 EMBEDDINGS_DIR = Path("data/embeddings")
 
-gemini = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+gemini = genai.Client(api_key=os.getenv("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY"))
 chroma_client = chromadb.PersistentClient(path=str(EMBEDDINGS_DIR))
 collection = chroma_client.get_or_create_collection(name="contracts")
 
